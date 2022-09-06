@@ -1,5 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:greengrocer/src/pages/widgets/app_name_widget.dart';
 
 // COMPONENTS
 import 'package:greengrocer/src/pages/widgets/custom_text_field.dart';
@@ -35,22 +36,10 @@ class _SignInScreenState extends State<SignInScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Name App
-                  Text.rich(
-                    TextSpan(
-                      style: const TextStyle(fontSize: 40),
-                      children: [
-                        const TextSpan(
-                          text: "Green",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                        TextSpan(
-                          text: "grocer",
-                          style: TextStyle(
-                              color: CustomColors.customConstrastColors),
-                        )
-                      ],
-                    ),
+                  const AppNameWidget(
+                    greenTitleColor: Colors.white,
+                    textSize: 40,
+                    fontWeight: true,
                   ),
 
                   // Categorys

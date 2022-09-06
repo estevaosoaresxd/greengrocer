@@ -20,6 +20,10 @@ dependencies:
   badges: ^2.0.3
   intl: ^0.17.0
   qr_flutter: ^4.0.0
+  add_to_cart_animation: ^0.0.7
+  fluttertoast: ^8.0.9
+  flutter_launcher_icons: ^0.10.0
+  shimmer: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -50,3 +54,9 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+  remove_alpha_ios: true

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // PAGES
-import 'package:greengrocer/src/pages/auth/sign_in_screen.dart';
+import 'package:greengrocer/src/pages/splash/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.green,
           scaffoldBackgroundColor: Colors.white.withAlpha(190)),
-      home: const SignInScreen(),
+      home: const SplashScreen(),
     );
   }
 }

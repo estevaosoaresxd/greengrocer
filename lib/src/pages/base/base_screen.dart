@@ -40,7 +40,11 @@ class _BaseScreenState extends State<BaseScreen> {
         unselectedItemColor: Colors.white.withAlpha(100),
         onTap: (index) => setState(() {
           currentIndex = index;
-          controller.jumpToPage(currentIndex);
+          controller.animateToPage(
+            currentIndex,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.ease,
+          );
         }),
         items: const [
           BottomNavigationBarItem(
