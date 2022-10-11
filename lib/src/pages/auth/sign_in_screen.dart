@@ -1,15 +1,21 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
-import 'package:greengrocer/src/pages/widgets/app_name_widget.dart';
+import 'package:greengrocer/src/pages/auth/controller/auth_controlller.dart';
 
 // COMPONENTS
 import 'package:greengrocer/src/pages/widgets/custom_text_field.dart';
 
-// PAGES
-import 'package:greengrocer/src/pages/auth/sign_up_screen.dart';
-import 'package:greengrocer/src/pages/base/base_screen.dart';
 //THEMES
 import 'package:greengrocer/src/config/custom_colors.dart';
+
+// ROUTES
+import 'package:greengrocer/src/routes/app_routes.dart';
+
+// PACKAGES
+import 'package:get/get.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
+
+// WIDGET
+import 'package:greengrocer/src/pages/widgets/app_name_widget.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -19,6 +25,11 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,104 +88,143 @@ class _SignInScreenState extends State<SignInScreen> {
                     top: Radius.circular(45),
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // E-mail
-                    const CustomTextField(
-                      icon: Icons.email,
-                      labelText: 'E-mail',
-                    ),
-                    const CustomTextField(
-                      icon: Icons.lock,
-                      labelText: 'Senha',
-                      isSecret: true,
-                    ),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // E-mail
+                      CustomTextField(
+                        icon: Icons.email,
+                        labelText: 'E-mail',
+                        controller: emailController,
+                        validator: (email) {
+                          if (email == null || email.isEmpty) {
+                            return "Digite o seu e-mail.";
+                          }
 
-                    //  Login
-                    SizedBox(
-                      height: 50,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => const BaseScreen()));
+                          if (!email.isEmail) {
+                            return "Digite um email válido.";
+                          }
+
+                          return null;
                         },
-                        child: const Text(
-                          "Entrar",
-                          style: TextStyle(fontSize: 18),
-                        ),
                       ),
-                    ),
+                      CustomTextField(
+                        icon: Icons.lock,
+                        labelText: 'Senha',
+                        isSecret: true,
+                        controller: passwordController,
+                        validator: (password) {
+                          if (password == null || password.isEmpty) {
+                            return "Digite a sua senha.";
+                          }
 
-                    // Forgot Password
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Esqueceu a senha?",
-                          style: TextStyle(
-                            color: CustomColors.customConstrastColors,
-                          ),
-                        ),
+                          if (password.length < 7) {
+                            return "Digite uma senha com pelo menos 7 caracteres";
+                          }
+
+                          return null;
+                        },
                       ),
-                    ),
 
-                    // Divider
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Divider(
-                              thickness: 2,
-                              color: Colors.grey.withAlpha(90),
+                      //  Login
+                      GetX<AuthController>(
+                        builder: (authController) {
+                          return SizedBox(
+                            height: 50,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                              ),
+                              onPressed: authController.isLoading.value
+                                  ? null
+                                  : () {
+                                      FocusScope.of(context).unfocus();
+                                      if (_formKey.currentState!.validate()) {
+                                        authController.signIn(
+                                            email: emailController.text,
+                                            password: passwordController.text);
+                                      }
+                                    },
+                              child: authController.isLoading.value
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white,
+                                    )
+                                  : const Text(
+                                      "Entrar",
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                            ),
+                          );
+                        },
+                      ),
+
+                      // Forgot Password
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            "Esqueceu a senha?",
+                            style: TextStyle(
+                              color: CustomColors.customConstrastColors,
                             ),
                           ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 15.0),
-                            child: Text("Ou"),
-                          ),
-                          Expanded(
-                            child: Divider(
-                              thickness: 2,
-                              color: Colors.grey.withAlpha(90),
+                        ),
+                      ),
+
+                      // Divider
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Divider(
+                                thickness: 2,
+                                color: Colors.grey.withAlpha(90),
+                              ),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 15.0),
+                              child: Text("Ou"),
+                            ),
+                            Expanded(
+                              child: Divider(
+                                thickness: 2,
+                                color: Colors.grey.withAlpha(90),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Create Account
+                      SizedBox(
+                        height: 50,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            Get.toNamed(PagesRoutes.signUpRoute);
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                              width: 2,
+                              color: Colors.green,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-
-                    // Create Account
-                    SizedBox(
-                      height: 50,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const SignUpScreen()));
-                        },
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(
-                            width: 2,
-                            color: Colors.green,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
+                          child: const Text(
+                            "Criar Conta",
+                            style: TextStyle(fontSize: 18),
                           ),
                         ),
-                        child: const Text(
-                          "Criar Conta",
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ],
