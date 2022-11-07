@@ -16,6 +16,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 
 // WIDGET
 import 'package:greengrocer/src/pages/widgets/app_name_widget.dart';
+import 'package:greengrocer/src/services/validators.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -98,34 +99,14 @@ class _SignInScreenState extends State<SignInScreen> {
                         icon: Icons.email,
                         labelText: 'E-mail',
                         controller: emailController,
-                        validator: (email) {
-                          if (email == null || email.isEmpty) {
-                            return "Digite o seu e-mail.";
-                          }
-
-                          if (!email.isEmail) {
-                            return "Digite um email válido.";
-                          }
-
-                          return null;
-                        },
+                        validator: emailValidator,
                       ),
                       CustomTextField(
                         icon: Icons.lock,
                         labelText: 'Senha',
                         isSecret: true,
                         controller: passwordController,
-                        validator: (password) {
-                          if (password == null || password.isEmpty) {
-                            return "Digite a sua senha.";
-                          }
-
-                          if (password.length < 7) {
-                            return "Digite uma senha com pelo menos 7 caracteres";
-                          }
-
-                          return null;
-                        },
+                        validator: passwordValidator,
                       ),
 
                       //  Login
@@ -141,10 +122,10 @@ class _SignInScreenState extends State<SignInScreen> {
                               ),
                               onPressed: authController.isLoading.value
                                   ? null
-                                  : () {
+                                  : () async {
                                       FocusScope.of(context).unfocus();
                                       if (_formKey.currentState!.validate()) {
-                                        authController.signIn(
+                                        await authController.signIn(
                                             email: emailController.text,
                                             password: passwordController.text);
                                       }
