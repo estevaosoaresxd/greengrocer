@@ -52,7 +52,10 @@ class AuthController extends GetxController {
 
   void saveTokenAndProceedToBase() async {
     await utilsServices.saveLocalData(
-        key: StorageKeys.token, data: user.token!);
+      key: StorageKeys.token,
+      data: user.token!,
+    );
+
     Get.offAllNamed(PagesRoutes.baseRoute);
   }
 
@@ -90,5 +93,9 @@ class AuthController extends GetxController {
         error: true,
       );
     });
+  }
+
+  Future<void> resetPassword({required String email}) async {
+    await authRepository.signUp(user: user);
   }
 }
