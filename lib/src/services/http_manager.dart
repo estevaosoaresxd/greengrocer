@@ -9,11 +9,12 @@ abstract class HttpMethods {
 }
 
 class HttpManager {
-  Future<Map> request(
-      {required String url,
-      required String method,
-      Map? headers,
-      Map? body}) async {
+  Future<Map> request({
+    required String url,
+    required String method,
+    Map? headers,
+    Map? body,
+  }) async {
     final defaultHeaders = headers?.cast<String, String>() ?? {}
       ..addAll({
         'Content-Type': 'application/json',

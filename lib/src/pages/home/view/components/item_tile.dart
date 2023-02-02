@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:greengrocer/src/config/custom_colors.dart';
 import 'package:greengrocer/src/models/item_model.dart';
-import 'package:greengrocer/src/pages/product/product_screen.dart';
+import 'package:greengrocer/src/routes/app_routes.dart';
 import 'package:greengrocer/src/services/utils_services.dart';
 
 // ignore: must_be_immutable
@@ -41,13 +42,7 @@ class _ItemTileState extends State<ItemTile> {
         // CARD
         GestureDetector(
           onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => ProductScreen(
-                  item: widget.item,
-                ),
-              ),
-            );
+            Get.toNamed(PagesRoutes.productRoute, arguments: widget.item);
           },
           child: Card(
             elevation: 1,
@@ -63,16 +58,16 @@ class _ItemTileState extends State<ItemTile> {
                   //Image
                   Expanded(
                     child: Hero(
-                      tag: widget.item.imgUrl,
-                      child: Image.asset(
-                        widget.item.imgUrl,
+                      tag: widget.item.picture,
+                      child: Image.network(
+                        widget.item.picture,
                         key: imageGk,
                       ),
                     ),
                   ),
                   //Name
                   Text(
-                    widget.item.itemName,
+                    widget.item.title,
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold),
                   ),

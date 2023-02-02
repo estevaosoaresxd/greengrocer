@@ -78,9 +78,12 @@ class ForgotPasswordDialog extends StatelessWidget {
                       color: Colors.green,
                     ),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formFieldkey.currentState!.validate()) {
-                      authController.resetPassword(email: emailController.text);
+                      await authController.resetPassword(
+                        email: emailController.text,
+                      );
+
                       Get.back(result: true);
                     }
                   },

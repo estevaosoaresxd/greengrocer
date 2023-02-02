@@ -63,7 +63,9 @@ class AuthRepository {
     await httpManager.request(
       url: EndPoints.resetPassword,
       method: HttpMethods.post,
-      body: {"email": email},
+      body: {
+        "email": email,
+      },
     );
   }
 }

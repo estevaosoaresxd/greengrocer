@@ -17,12 +17,14 @@ class _CardTabState extends State<CardTab> {
   UtilsServices utilsServices = UtilsServices();
 
   void removeItemFromCart(CartItemModel cart) {
-    setState(() {
-      cartItems.remove(cart);
+    setState(
+      () {
+        cartItems.remove(cart);
 
-      utilsServices.showToast(
-          message: "${cart.item.itemName} removido(a) do carrinho");
-    });
+        utilsServices.showToast(
+            message: "${cart.item.title} removido(a) do carrinho");
+      },
+    );
   }
 
   double cartTotalPrice() {
@@ -96,12 +98,14 @@ class _CardTabState extends State<CardTab> {
                       bool? result = await showOrderConfirmation();
 
                       if (result ?? false) {
-                        showDialog(
-                          context: context,
-                          builder: (_) => PaymentDialog(
-                            order: orders.first,
-                          ),
-                        );
+                        if (context.mounted) {
+                          await showDialog(
+                            context: context,
+                            builder: (_) => PaymentDialog(
+                              order: orders.first,
+                            ),
+                          );
+                        }
                       } else {
                         utilsServices.showToast(
                             message: "Pedido não confirmado", error: true);

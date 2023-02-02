@@ -96,6 +96,6 @@ class AuthController extends GetxController {
   }
 
   Future<void> resetPassword({required String email}) async {
-    await authRepository.signUp(user: user);
+    await authRepository.resetPassword(email: email);
   }
 }

@@ -10,7 +10,9 @@ import 'package:greengrocer/src/routes/app_routes.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  Get.put(AuthController());
+  Get.put(
+    AuthController(),
+  );
 
   runApp(const MyApp());
 }

@@ -143,7 +143,7 @@ class _OrderItemWidget extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          Expanded(child: Text(orderItem.item.itemName)),
+          Expanded(child: Text(orderItem.item.title)),
           Text(
             utilsServices.priceToCurrency(orderItem.totalPrice()),
           )

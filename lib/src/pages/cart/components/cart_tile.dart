@@ -32,14 +32,14 @@ class _CardTileState extends State<CardTile> {
       child: ListTile(
         // IMAGE
         leading: Image.asset(
-          widget.cartItems.item.imgUrl,
+          widget.cartItems.item.picture,
           height: 60,
           width: 60,
         ),
 
         // ITEM NAME
         title: Text(
-          widget.cartItems.item.itemName,
+          widget.cartItems.item.title,
           style: const TextStyle(
             fontWeight: FontWeight.w500,
           ),
