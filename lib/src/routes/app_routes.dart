@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:greengrocer/src/pages/orders/binding/orders_binding.dart';
 
 // PAGES
 import 'package:greengrocer/src/pages/product/product_screen.dart';
@@ -34,6 +35,7 @@ abstract class AppRoutes {
         HomeBinding(),
         NavigationBinding(),
         CartBinding(),
+        OrdersBinding()
       ],
     ),
     GetPage(

@@ -8,6 +8,7 @@ import 'package:greengrocer/src/config/custom_colors.dart';
 
 // CONTROLLER
 import 'package:greengrocer/src/pages/base/controller/navigation_controller.dart';
+import 'package:greengrocer/src/pages/cart/controller/cart_controller.dart';
 import 'package:greengrocer/src/pages/product/controller/product_controller.dart';
 
 // WIDGET
@@ -29,6 +30,7 @@ class _ProductScreenState extends State<ProductScreen> {
   int cartItemQuantity = 1;
 
   final navigationController = Get.find<NavigationController>();
+  final cartController = Get.find<CartController>();
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +118,6 @@ class _ProductScreenState extends State<ProductScreen> {
                           ),
                         ),
 
-                        // Button
                         SizedBox(
                           height: 55,
                           child: ElevatedButton.icon(
@@ -127,6 +128,11 @@ class _ProductScreenState extends State<ProductScreen> {
                             ),
                             onPressed: () {
                               Get.back();
+
+                              cartController.addItemToCart(
+                                item: controller.item,
+                                quantity: cartItemQuantity,
+                              );
 
                               navigationController.navigatePageView(
                                 NavigationTabs.cart,

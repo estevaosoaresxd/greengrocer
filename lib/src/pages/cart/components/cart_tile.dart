@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:greengrocer/src/config/custom_colors.dart';
 
 import 'package:greengrocer/src/models/cart_item_model.dart';
+import 'package:greengrocer/src/pages/cart/controller/cart_controller.dart';
 import 'package:greengrocer/src/pages/widgets/quantity_widget.dart';
 import 'package:greengrocer/src/services/utils_services.dart';
 
 class CardTile extends StatefulWidget {
   final CartItemModel cartItems;
-  final Function(CartItemModel) remove;
 
   const CardTile({
     Key? key,
     required this.cartItems,
-    required this.remove,
   }) : super(key: key);
 
   @override
@@ -21,6 +21,7 @@ class CardTile extends StatefulWidget {
 
 class _CardTileState extends State<CardTile> {
   UtilsServices utilsServices = UtilsServices();
+  final controller = Get.find<CartController>();
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class _CardTileState extends State<CardTile> {
       ),
       child: ListTile(
         // IMAGE
-        leading: Image.asset(
+        leading: Image.network(
           widget.cartItems.item.picture,
           height: 60,
           width: 60,
@@ -56,18 +57,16 @@ class _CardTileState extends State<CardTile> {
 
         // QUANTITY
         trailing: QuantityWidget(
-            isRemovable: true,
-            value: widget.cartItems.quantity,
-            suffixText: widget.cartItems.item.unit,
-            result: (quantity) {
-              setState(() {
-                widget.cartItems.quantity = quantity;
-
-                if (quantity == 0) {
-                  widget.remove(widget.cartItems);
-                }
-              });
-            }),
+          isRemovable: true,
+          value: widget.cartItems.quantity,
+          suffixText: widget.cartItems.item.unit,
+          result: (quantity) async {
+            await controller.changeItemQuantity(
+              item: widget.cartItems,
+              quantity: quantity,
+            );
+          },
+        ),
       ),
     );
   }

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:greengrocer/src/config/app_data.dart';
+import 'package:get/get.dart';
 import 'package:greengrocer/src/config/custom_colors.dart';
-import 'package:greengrocer/src/models/cart_item_model.dart';
 import 'package:greengrocer/src/pages/cart/components/cart_tile.dart';
-import 'package:greengrocer/src/pages/widgets/payment_dialog.dart';
+import 'package:greengrocer/src/pages/cart/controller/cart_controller.dart';
 import 'package:greengrocer/src/services/utils_services.dart';
 
 class CardTab extends StatefulWidget {
@@ -16,25 +15,7 @@ class CardTab extends StatefulWidget {
 class _CardTabState extends State<CardTab> {
   UtilsServices utilsServices = UtilsServices();
 
-  void removeItemFromCart(CartItemModel cart) {
-    setState(
-      () {
-        cartItems.remove(cart);
-
-        utilsServices.showToast(
-            message: "${cart.item.title} removido(a) do carrinho");
-      },
-    );
-  }
-
-  double cartTotalPrice() {
-    double total = 0.0;
-    for (var item in cartItems) {
-      total += item.totalPrice();
-    }
-
-    return total;
-  }
+  final cartController = Get.find<CartController>();
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +27,36 @@ class _CardTabState extends State<CardTab> {
         children: [
           // ignore: prefer_const_constructors
           Expanded(
-            child: ListView.builder(
-              itemCount: cartItems.length,
-              itemBuilder: (context, index) => CardTile(
-                cartItems: cartItems[index],
-                remove: removeItemFromCart,
-              ),
+            child: GetBuilder<CartController>(
+              builder: (controller) {
+                if (controller.cartItems.isEmpty) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.remove_shopping_cart,
+                        size: 40,
+                        color: CustomColors.customSwatchColors,
+                      ),
+                      const Text(
+                        "Não há itens no carrinho",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      )
+                    ],
+                  );
+                }
+
+                return ListView.builder(
+                    itemCount: controller.cartItems.length,
+                    itemBuilder: (context, index) {
+                      return CardTile(
+                        cartItems: controller.cartItems[index],
+                      );
+                    });
+              },
             ),
           ),
 
@@ -80,48 +85,58 @@ class _CardTabState extends State<CardTab> {
                     fontSize: 12,
                   ),
                 ),
-                Text(
-                  utilsServices.priceToCurrency(cartTotalPrice()),
-                  style: TextStyle(
-                    fontSize: 23,
-                    color: CustomColors.customSwatchColors,
-                    fontWeight: FontWeight.bold,
-                  ),
+                GetBuilder<CartController>(
+                  builder: (controller) {
+                    return Text(
+                      utilsServices.priceToCurrency(
+                        controller.getTotalPrice(),
+                      ),
+                      style: TextStyle(
+                        fontSize: 23,
+                        color: CustomColors.customSwatchColors,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(
                   height: 10,
                 ),
                 SizedBox(
                   height: 50,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      bool? result = await showOrderConfirmation();
+                  child: GetBuilder<CartController>(
+                    builder: (controller) => ElevatedButton(
+                      onPressed: controller.isLoadingCheckout ||
+                              controller.cartItems.isEmpty
+                          ? null
+                          : () async {
+                              bool? result = await showOrderConfirmation();
 
-                      if (result ?? false) {
-                        if (context.mounted) {
-                          await showDialog(
-                            context: context,
-                            builder: (_) => PaymentDialog(
-                              order: orders.first,
+                              if (result ?? false) {
+                                if (context.mounted) {
+                                  await cartController.checkoutCart();
+                                }
+                              } else {
+                                utilsServices.showToast(
+                                  message: "Pedido não confirmado",
+                                  error: true,
+                                );
+                              }
+                            },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: CustomColors.customSwatchColors,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                      ),
+                      child: controller.isLoadingCheckout
+                          ? const CircularProgressIndicator()
+                          : const Text(
+                              "Concluir Pedido",
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
                             ),
-                          );
-                        }
-                      } else {
-                        utilsServices.showToast(
-                            message: "Pedido não confirmado", error: true);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: CustomColors.customSwatchColors,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                    ),
-                    child: const Text(
-                      "Concluir Pedido",
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
                     ),
                   ),
                 ),

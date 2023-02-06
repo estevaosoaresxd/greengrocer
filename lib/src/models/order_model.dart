@@ -1,21 +1,52 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:json_annotation/json_annotation.dart';
+
 import 'package:greengrocer/src/models/cart_item_model.dart';
 
+part 'order_model.g.dart';
+
+@JsonSerializable()
 class OrderModel {
   String id;
-  DateTime createdDateTime;
+
+  @JsonKey(name: 'createdAt')
+  DateTime? createdDateTime;
+
+  @JsonKey(name: 'due')
   DateTime overdueDateTime;
+
+  @JsonKey(defaultValue: [])
   List<CartItemModel> items;
+
   String status;
+
+  @JsonKey(name: 'copiaecola')
   String copyAndPaste;
+
+  String qrCodeImage;
+
   double total;
 
+  bool get isOverdue => overdueDateTime.isBefore(DateTime.now());
+
   OrderModel({
-    required this.copyAndPaste,
+    required this.id,
     required this.createdDateTime,
     required this.overdueDateTime,
-    required this.id,
-    required this.status,
-    required this.total,
     required this.items,
+    required this.status,
+    required this.copyAndPaste,
+    required this.qrCodeImage,
+    required this.total,
   });
+
+  factory OrderModel.fromJson(Map<String, dynamic> json) =>
+      _$OrderModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OrderModelToJson(this);
+
+  @override
+  String toString() {
+    return 'OrderModel(id: $id, createdDateTime: $createdDateTime, overdueDateTime: $overdueDateTime, items: $items, status: $status, copyAndPaste: $copyAndPaste, qrCodeImage: $qrCodeImage, total: $total)';
+  }
 }

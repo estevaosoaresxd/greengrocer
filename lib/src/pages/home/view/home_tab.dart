@@ -10,6 +10,8 @@ import 'package:greengrocer/src/config/custom_colors.dart';
 import 'package:add_to_cart_animation/add_to_cart_animation.dart';
 import 'package:add_to_cart_animation/add_to_cart_icon.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:greengrocer/src/pages/base/controller/navigation_controller.dart';
+import 'package:greengrocer/src/pages/cart/controller/cart_controller.dart';
 import 'package:greengrocer/src/pages/home/controller/home_controller.dart';
 import 'package:greengrocer/src/pages/home/view/components/category_title.dart';
 
@@ -30,6 +32,8 @@ class _HomeTabState extends State<HomeTab> {
 
   final searchController = TextEditingController();
 
+  final navController = Get.find<NavigationController>();
+
   late Function(GlobalKey) runAddToCardAnimation;
 
   void itemSelectedCardAnimations(GlobalKey gkImage) {
@@ -49,25 +53,31 @@ class _HomeTabState extends State<HomeTab> {
           // Cart Button
           Padding(
             padding: const EdgeInsets.only(top: 15, right: 15),
-            child: GestureDetector(
-              onTap: () {},
-              child: badges.Badge(
-                badgeColor: CustomColors.customConstrastColors,
-                badgeContent: const Text(
-                  "2",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
+            child: GetBuilder<CartController>(
+              builder: (controller) {
+                return GestureDetector(
+                  onTap: () => navController.navigatePageView(
+                    NavigationTabs.cart,
                   ),
-                ),
-                child: AddToCartIcon(
-                  key: gkCart,
-                  icon: Icon(
-                    Icons.shopping_cart,
-                    color: CustomColors.customSwatchColors,
+                  child: badges.Badge(
+                    badgeColor: CustomColors.customConstrastColors,
+                    badgeContent: Text(
+                      controller.cartItems.length.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                    ),
+                    child: AddToCartIcon(
+                      key: gkCart,
+                      icon: Icon(
+                        Icons.shopping_cart,
+                        color: CustomColors.customSwatchColors,
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           )
         ],
